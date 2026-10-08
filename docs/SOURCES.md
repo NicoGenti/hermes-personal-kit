@@ -18,3 +18,8 @@ Consultate l'8 ottobre 2026. Sono documenti correnti upstream, non una certifica
 Scelte progettuali del kit: massimo 2 figli per batch, profondità 1, budget 20 iterazioni figlio, orchestratore capace di rispondere direttamente alle richieste semplici. Non sono benchmark o valori ottimali misurati.
 
 Limiti verificati nella documentazione corrente: modello delegazione globale; assenza di model/toolsets per singola chiamata nel percorso documentato; profili non equivalenti a sandbox; profili specialistici e deleghe temporanee non sono la stessa identità. Verificare nuovamente se la CLI installata mostra un contratto diverso.
+
+- Distribuzioni native: https://hermes-agent.nousresearch.com/docs/user-guide/profile-distributions
+- Toolset: https://hermes-agent.nousresearch.com/docs/reference/toolsets-reference/
+
+La v0.2.0 ha controlli statici, non una matrice di compatibilita runtime. Provider e modello vanno configurati nel profilo installato.

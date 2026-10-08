@@ -1,46 +1,87 @@
-# Hermes Personal Orchestrator Kit — v0.1.0
+# Hermes Personal Kit
 
-Starter per Nicolas, 8 ottobre 2026. Adatta il pattern di opencode-orchestrator-kit all'assistenza personale sul PC. Il coding rimane in OpenCode.
+Profilo distribuibile per **Hermes Agent**: un assistente personale in italiano che coordina ricerca, analisi e attivita' sul PC. I task semplici restano al principale; quelli circoscritti e indipendenti possono essere delegati. Lo sviluppo applicativo resta in OpenCode.
 
-## Stato
+**Versione 0.2.0 — distribuzione iniziale, da collaudare sul proprio Hermes.** Validazione statica inclusa; nessuna certificazione end-to-end su una specifica release Hermes. Il kit non contiene credenziali o dati personali.
 
-Il pacchetto contiene istruzioni di profilo Hermes, contratti di delega e configurazione proposta. Non è un plugin, non installa software e non è stato eseguito sul tuo PC. Compatibilità da verificare sulla versione installata: la documentazione upstream evolve e può precedere la tua release.
+## Installazione
 
-## Percorso più semplice
+Richiede Git e una versione Hermes che esponga `profile install`. Verifica prima:
 
-1. Estrai questa cartella in una posizione stabile sul PC, fuori dai tuoi repository di sviluppo.
-2. Apri Hermes con la configurazione Ollama che già funziona.
-3. Incolla il contenuto di `AVVIO-HERMES.txt`, indicando il percorso della cartella estratta.
-4. Hermes verifica l'ambiente e prepara il profilo `personal`. Il prompt autorizza le modifiche circoscritte di setup e richiede backup dei file sostituiti.
-5. Apri una nuova sessione con `hermes -p personal chat` dopo la configurazione. La nuova sessione carica la nuova identità.
+```bash
+hermes --version
+hermes profile install --help
+```
 
-Non serve cambiare modello per il primo collaudo. Un endpoint Ollama locale può comunque usare un modello cloud: la posizione del server non garantisce che i dati restino sul PC.
+Dal repository pubblicato:
 
-## Contenuto
+```bash
+hermes profile install github.com/NicoGenti/hermes-personal-kit --alias
+hermes -p hermes-personal-kit model
+hermes -p hermes-personal-kit chat
+```
 
-| File | Funzione |
+Il comando `model` configura il provider per **questo nuovo profilo**. Seleziona Ollama secondo le opzioni della tua release, mantenendo il modello che gia' usi. L'installazione non eredita automaticamente la configurazione creata da `ollama launch hermes`. Non sostituire l'intero config del kit con quello del profilo precedente.
+
+Per un checkout o un archivio estratto, prima della pubblicazione:
+
+```bash
+hermes profile install /percorso/assoluto/hermes-personal-kit --alias
+```
+
+Se il profilo esiste gia', controlla `hermes profile info hermes-personal-kit` e segui il percorso di aggiornamento. Non sostituire un profilo personale diverso con lo stesso nome.
+
+## Funziona gia' / richiede attivazione
+
+| Capacita' | Stato nella distribuzione |
 |---|---|
-| `AVVIO-HERMES.txt` | Prompt operativo per controllare e applicare il kit localmente |
-| `profiles/personal/SOUL.md` | Orchestratore con instradamento e deleghe circoscritte |
-| `profiles/researcher/SOUL.md` | Specialista di ricerca per un futuro profilo indipendente |
-| `profiles/documents/SOUL.md` | Specialista documenti per un futuro profilo indipendente |
-| `profiles/pc-operator/SOUL.md` | Specialista PC per un futuro profilo indipendente |
-| `config/personal.fragment.yaml` | Limiti proposti da fondere nella configurazione, senza sostituirla |
-| `docs/SETUP.md` | Setup manuale, strumenti, collaudo e ripristino |
-| `docs/ARCHITECTURE.md` | Scelte e limiti del porting |
-| `docs/HANDOFF.md` | Contratto breve tra orchestratore e specialisti |
-| `docs/SOURCES.md` | Documentazione usata e riferimenti al kit originale |
+| Instradamento e risposta in italiano | Prompt principale |
+| Ricerca web | Toolset selezionato; richiede backend disponibile |
+| Subagenti temporanei | Delegation selezionato; prova reale necessaria |
+| Memoria e ricerca sessioni | Strumenti nativi selezionati |
+| Lettura/scrittura documenti locali | Disabilitata nel principale; template specialista |
+| Browser autenticato e controllo desktop | Disabilitati nel principale; attivazione in profilo separato |
+| Profili specialistici persistenti | Template inclusi, non registrati automaticamente |
+| Kanban, email e cron | Non attivati |
 
-I file `profiles/*/SOUL.md` sono prompt per Hermes, non skill installate in ChatGPT. Copiarli non crea automaticamente profili o agenti registrati. I subagenti `delegate_task` non caricano automaticamente il SOUL di un profilo omonimo: il ruolo va passato nel contesto di delega.
+La prima release abilita la base di ricerca/coordinamento. Non promette controllo del PC senza configurare e verificare i suoi strumenti. I prompt specialistici non sono sandbox e non cambiano i permessi OS.
 
-## Prima milestone
+## Primo collaudo
 
-Profilo `personal` avviabile con il provider esistente; ricerca verificata; una delega reale conclusa; nessun accesso desktop abilitato implicitamente. Ricerca web e analisi documenti richiedono strumenti effettivamente disponibili: il solo abbonamento al modello non ne garantisce la presenza.
+In una nuova chat del profilo:
 
-## Incrementi successivi
+> Delega a un solo subagente una ricerca sulle differenze tra profilo e subagente nella documentazione ufficiale Hermes. Restituisci due evidenze con URL. Indica se delega e web sono stati realmente usati. Non modificare configurazioni.
 
-- **v0.2:** profili `documents` e `pc-operator`, accesso a cartelle concordate, collaudo browser e desktop, verifica delle modifiche e rollback.
-- **v0.3:** profili sul Kanban nativo, orchestrazione manuale, un dispatcher, stato persistente.
-- **v0.4:** organizzazione personale, servizi calendario/email e automazioni esplicitamente configurate.
+Controlla le chiamate effettive e il risultato. Se uno strumento manca, la prova e' bloccata, non riuscita. Vedi [setup e collaudo](docs/SETUP.md).
 
-Non sono implementati qui: broker MCP personalizzato, isolamento OS, controllo di spesa monetario, orchestrazione Kanban automatica o integrazioni con email/calendario.
+## Aggiornamento
+
+```bash
+hermes profile update hermes-personal-kit
+```
+
+Hermes preserva normalmente la configurazione locale; una nuova versione del config nel repository potrebbe quindi richiedere una fusione manuale. Non usare `--force-config` senza backup: puo' ripristinare i default e perdere le scelte locali. Memoria, sessioni e credenziali non appartengono alla distribuzione. Personalizza in modo consapevole i file distribuiti: SOUL e documenti possono essere sostituiti dagli aggiornamenti.
+
+## Struttura
+
+- `distribution.yaml`: manifest nativo Hermes.
+- `SOUL.md`: orchestratore e briefing dei ruoli temporanei.
+- `config.yaml`: strumenti e limiti del profilo principale.
+- `specialists/`: SOUL per profili separati da creare esplicitamente.
+- `docs/`: setup, architettura, contratto e fonti.
+- `scripts/validate.py`: controllo statico di manifest, config e contenuti pubblicabili.
+- `.github/workflows/validate.yml`: verifica automatica su push e pull request.
+
+## Validazione per contributori
+
+```bash
+python -m pip install -r requirements-dev.txt
+python scripts/validate.py
+python -m unittest discover -s tests -v
+```
+
+La CI non esegue modelli a pagamento, non richiede segreti e non prova il desktop. Per versionare: aggiornare `distribution.yaml` e `CHANGELOG.md`, validare, collaudare sulla release Hermes indicata e solo dopo creare il tag.
+
+## Provenienza
+
+Ispirato al pattern di [opencode-orchestrator-kit](https://github.com/NicoGenti/opencode-orchestrator-kit): deleghe precise, contesto piccolo, verifiche e risultati tracciabili. Adattamento specifico a Hermes; non importa agenti o permessi OpenCode. [Fonti e limiti](docs/SOURCES.md).

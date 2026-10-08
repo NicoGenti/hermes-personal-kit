@@ -4,22 +4,22 @@
 
 Il repository originale separa router e specialisti attraverso agenti nativi OpenCode e frontmatter di modello/permessi. Hermes richiede un adattamento: questi frontmatter non sono configurazioni Hermes.
 
-Il principale `personal` mantiene instradamento, verifica e memoria. Il SOUL include brevi istruzioni dei ruoli temporanei così una delega sia autosufficiente senza caricare tutto il kit. I SOUL specialistici sono destinati a profili indipendenti successivi, non vengono caricati implicitamente da delegate_task.
+Il principale `hermes-personal-kit` mantiene instradamento, verifica e memoria. Il SOUL include brevi istruzioni dei ruoli temporanei così una delega sia autosufficiente senza caricare tutto il kit. I SOUL specialistici sono destinati a profili indipendenti successivi, non vengono caricati implicitamente da delegate_task.
 
 ## Due percorsi
 
 | Percorso | Uso | Limite |
 |---|---|---|
-| personal → delegate_task | Ricerche e analisi brevi | Figli con contesto nuovo, strumenti ereditati, modello globale per delegazione |
-| personal → Kanban → profilo specialista | Attività persistenti, configurazioni distinte, ripresa | Richiede setup Kanban/dispatcher e descrizioni dei profili |
+| hermes-personal-kit → delegate_task | Ricerche e analisi brevi | Figli con contesto nuovo, strumenti ereditati, modello globale per delegazione |
+| hermes-personal-kit → Kanban → profilo specialista | Attività persistenti, configurazioni distinte, ripresa | Richiede setup Kanban/dispatcher e descrizioni dei profili |
 
 Nel secondo percorso impostare la decomposizione Kanban manuale affinché personal crei e assegni le carte. Non presumere che `orchestrator_profile` importi il SOUL nel decompositore automatico. Un solo dispatcher per la board. Non avviare processi concorrenti sullo stesso profilo. L'abilitazione operativa del Kanban è rinviata alla verifica della versione locale.
 
 ## Strumenti e isolamento
 
-Il profilo personal iniziale serve ricerca e coordinamento. Le capacità desktop appartengono a pc-operator. I profili separano stato, non filesystem o identità OS. Per impedire davvero la scrittura occorrono tool di sola lettura, scope API, permessi OS o sandbox. Una shell generica può aggirare una limitazione applicata solo a un tool filesystem.
+Il profilo principale iniziale serve ricerca e coordinamento. Le capacità desktop appartengono a pc-operator. I profili separano stato, non filesystem o identità OS. Per impedire davvero la scrittura occorrono tool di sola lettura, scope API, permessi OS o sandbox. Una shell generica può aggirare una limitazione applicata solo a un tool filesystem.
 
-Se servono strumenti locali mirati, un futuro MCP può esporre operazioni tipizzate come inventario cartella o anteprima rinomina, con validazione percorsi lato server. Questo broker non è incluso nella v0.1. Non è necessario costruirlo per verificare ricerca e delega.
+Se servono strumenti locali mirati, un futuro MCP può esporre operazioni tipizzate come inventario cartella o anteprima rinomina, con validazione percorsi lato server. Questo broker non è incluso nella v0.2. Non è necessario costruirlo per verificare ricerca e delega.
 
 ## Memoria
 

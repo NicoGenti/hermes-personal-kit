@@ -1,0 +1,11 @@
+name: hermes-personal-kit
+version: 0.2.0
+description: "Assistente personale con orchestrazione leggera e deleghe circoscritte per Hermes Agent."
+author: "NicoGenti"
+license: MIT
+env_requires: []
+distribution_owned:
+  - SOUL.md
+  - config.yaml
+  - docs/
+  - specialists/

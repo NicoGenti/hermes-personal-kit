@@ -1,94 +1,48 @@
-# Setup e collaudo
+# Setup e collaudo sul PC
 
-## 1. Rilevare l'ambiente
+## Compatibilita'
 
-Nel terminale in cui Hermes già funziona:
+Verificare `hermes --version`, `hermes profile install --help`, `hermes profile`, `hermes config --help` e `hermes tools --help`. Non esiste ancora una versione minima verificata dal kit: non e' dichiarato un requisito inventato nel manifest. In caso di comando assente, consultare la documentazione della propria release prima di aggiornare.
 
-```text
-hermes --version
-hermes --help
-hermes profile
-hermes profile create --help
-hermes config --help
-hermes tools --help
-```
+La documentazione upstream consultata l'8 ottobre 2026 supporta distribuzioni Git, profili indipendenti e deleghe con strumenti ereditati. Il kit usa `platform_toolsets.cli` e `agent.disabled_toolsets`; dopo l'installazione verificarne l'effetto sulla versione concreta.
 
-Usare l'help della release installata come criterio di compatibilità. Se un comando non esiste, fermare la relativa fase. Il kit non impone aggiornamenti. Annotare Windows nativo/WSL/Linux/macOS, versione, profilo attivo e percorso, modello e uso locale/cloud quando verificabile. Non condividere `.env`, chiavi, configurazioni complete o dump dell'ambiente.
+## Provider
 
-## 2. Creare personal
+Installare la distribuzione secondo il README. Configurare il modello nel nuovo profilo con `hermes -p hermes-personal-kit model`. Non copiare l'intero config o tutti i plugin del profilo originale: si perderebbe la selezione degli strumenti del kit. Non stampare o pubblicare `.env`, auth.json o output completi di configurazione.
 
-Controllare prima che non esista già un profilo con quel nome. Sulla CLI documentata:
+Ollama puo' servire modelli locali o cloud. Il solo endpoint localhost non dimostra che l'inferenza sia locale. La ricerca web puo' richiedere un backend/credenziali aggiuntivi rispetto all'accesso al modello.
 
-```text
-hermes profile create personal --clone
-hermes -p personal profile
-```
+## Strumenti
 
-Il clone proviene dal profilo attivo: controllarlo prima. La documentazione attuale esclude i canali di messaggistica e cron dal clone ordinario, ma include configurazione, segreti del provider, memoria curata, skill e plugin. Verificare il comportamento nella versione installata. Non usare `--clone-all` o `--clone-channels`. Se il profilo contiene integrazioni inattese, configurare un profilo vuoto tramite il setup nativo anziché copiarle indiscriminatamente.
+Aprire `hermes -p hermes-personal-kit tools` e ispezionare la selezione effettiva. CLI prevista: web, delegation, memory, session_search, todo, clarify. File, terminale, codice, browser, desktop, cron e Kanban sono disabilitati nel principale. Il toolset file include anche scrittura: non abilitarlo chiamandolo sola lettura.
 
-Dal percorso effettivamente mostrato, effettuare una copia di backup locale di `SOUL.md` e `config.yaml` prima della modifica. Copiare `profiles/personal/SOUL.md` nel SOUL del nuovo profilo. Fondere `config/personal.fragment.yaml` con la configurazione esistente usando un editor YAML o il comando nativo supportato: non concatenare il frammento al fondo del file. Conservare provider, endpoint e modello. Non salvare backup con credenziali in repository o servizi condivisi.
+Gateway e Desktop non sono configurati o collaudati da questa release. Non aggiungere plugin/MCP con permessi estesi senza rivedere la superficie del profilo. La selezione dei tool non e' isolamento OS.
 
-## 3. Selezionare gli strumenti
+Avviare la chat fuori da repository con AGENTS.md di coding: Hermes puo' ereditare contesto dal workspace anche nei figli. Non aprire processi concorrenti con la stessa home di profilo.
 
-```text
-hermes -p personal tools
-```
+## Criteri di accettazione
 
-La UI e i nomi effettivi dipendono dalla release. Prima configurazione:
-
-| Capacità | personal v0.1 |
+| Controllo | PASS |
 |---|---|
-| Ricerca/estrazione web | Abilitare se il backend funziona |
-| Delegazione | Abilitare |
-| Memoria e ricerca sessioni | Abilitare |
-| Pianificazione semplice | Facoltativa |
-| Terminale, esecuzione codice, scrittura file | Disabilitare nella prima prova di ricerca |
-| Browser con sessioni autenticate, Computer Use | Disabilitare fino alla fase operativa |
-| Invio messaggi, cron, integrazioni mutative | Disabilitare |
-| MCP/plugin ereditati | Ispezionare e disabilitare quelli fuori ambito |
+| Profilo | Nome e percorso attesi, distinto dal precedente |
+| Modello | Provider selezionato e una risposta riuscita |
+| Delega | Chiamata reale a delegate_task con risultato finale |
+| Web | Richiesta al backend riuscita e fonti pertinenti |
+| Superficie | Tool mutativi previsti disabilitati non esposti |
+| Config | Limiti riletti correttamente dalla configurazione |
 
-La separazione sopra riduce la superficie operativa: non costituisce una sandbox. La configurazione della memoria autorizza le sue scritture interne; “ricerca senza modifiche PC” non significa assenza di qualunque stato interno.
+Registrare PASS, FAIL o NOT RUN. Una risposta che descrive una delega non dimostra che sia stata eseguita. Un parser YAML riuscito non certifica che Hermes usi ogni chiave. Eseguire un incarico alla volta per il primo collaudo.
 
-L'analisi di documenti locali diventa disponibile quando esiste uno strumento di lettura appropriato. Per PDF scansionati e creazione documenti possono servire capacità di esecuzione in un profilo dedicato; non abilitarle tacitamente sul principale.
+## Profili specialistici
 
-## 4. Nuova sessione e smoke test
+Per creare un profilo indipendente, usare per esempio `hermes profile create pc-operator`, configurarlo tramite `hermes -p pc-operator model`, individuarne il percorso con `hermes -p pc-operator profile` e copiare il relativo SOUL dopo un backup. Ripetere solo per i ruoli necessari. Non presumere che un profilo appena creato abbia strumenti ristretti: selezionarli prima del primo task.
 
-```text
-hermes -p personal chat
-```
+- researcher: ricerca e confronto; strumenti web, senza shell o API mutative.
+- documents: strumenti necessari ai formati e cartelle concordate; gli accessi vanno applicati negli strumenti o nell'OS, non solo nel prompt.
+- pc-operator: diagnosi, poi operazioni autorizzate; verificare host/WSL/container, sessione e driver con `hermes -p pc-operator computer-use status` e `hermes -p pc-operator computer-use doctor` se disponibili.
 
-Avviare fuori da repository con AGENTS.md di coding; i contesti workspace possono essere caricati anche nei figli. Non eseguire una seconda istanza dello stesso profilo per i test.
+Questi profili possono essere usati direttamente. Per farli assegnare dal principale occorre una successiva configurazione Kanban con decomposizione manuale e un dispatcher. Non esiste nel kit un parametro `delegate_task(profile=...)`. I subagenti temporanei ricevono invece un breve ruolo nel loro context.
 
-Inviare:
+## Rollback
 
-```text
-Verifica quali strumenti hai realmente. Poi delega una ricerca breve a un singolo subagente: trova nella documentazione ufficiale Hermes la differenza tra profilo e subagente e restituisci due evidenze con URL. Non modificare file o configurazioni. Indica se la delega è stata realmente eseguita e se la ricerca web ha funzionato.
-```
-
-| Verifica | PASS |
-|---|---|
-| Avvio | Banner personal; modello/provider previsti |
-| Prompt | Risposta coerente con ruolo personale, senza workflow coding obbligatorio |
-| Delega | Chiamata reale a delegate_task e risultato del figlio |
-| Ricerca | Fonti recuperate davvero e URL apribili |
-| Permessi | Strumenti fuori ambito non esposti nella configurazione effettiva |
-| Limiti | Chiavi accettate e valori riletti dalla configurazione |
-
-Uno schema accettato non prova ancora il comportamento dei limiti in ogni percorso. Segnare NOT RUN per prove mancanti. In caso di quota/provider/tool assente riportare il problema; non dichiarare successo usando soltanto conoscenza interna.
-
-## 5. Profili operativi, dopo il primo collaudo
-
-Creare researcher/documents/pc-operator solo quando servono. Installare il relativo SOUL nel percorso mostrato dalla CLI, configurare modello e strumenti specifici e collaudare singolarmente. La presenza dei file nel pacchetto non attiva questi profili. Per il loro instradamento dal principale occorre configurare il Kanban nativo o un adattatore esplicito; non esiste in questo kit una chiamata magica `delegate_task(profile=...)`.
-
-Sul profilo pc-operator verificare prima:
-
-```text
-hermes -p pc-operator computer-use status
-hermes -p pc-operator computer-use doctor
-```
-
-Se il comando è supportato, il driver mancante è un prerequisito da installare separatamente. In WSL o container accertare quale desktop viene controllato. Il primo test deve limitarsi a identificare una finestra innocua concordata, senza interazione mutativa. Abilitare browser e desktop con le modalità di approvazione native; non attivare YOLO. Per operazioni ripetibili valutare il manifest di capacità supportato dal driver.
-
-## Ripristino
-
-Terminare la sessione personal; ripristinare SOUL.md e config.yaml dai backup corrispondenti; aprire una nuova sessione. Tornare al profilo originale con `hermes -p <nome-originale> chat`. Questo ripristino riguarda il setup, non annulla eventuali azioni svolte successivamente sul PC. Non eliminare il profilo per ripristinare due file.
+Prima di un update salvare localmente SOUL/config e annotare versione/source da `hermes profile info hermes-personal-kit`. Terminare il profilo, ripristinare i file di backup e riaprire una sessione per ricaricare il prompt. I backup non vanno committati. Tornare al profilo precedente con `hermes -p NOME-PRECEDENTE chat`. Il rollback della configurazione non annulla azioni gia' eseguite sul PC o servizi esterni.

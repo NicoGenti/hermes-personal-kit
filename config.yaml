@@ -1,0 +1,35 @@
+# Profilo iniziale: ricerca, coordinamento, memoria. Provider da configurare.
+# Il file e' completo per i default del kit; Hermes integra i suoi default.
+# Non contiene modello, endpoint o credenziali di Nicolas.
+platform_toolsets:
+  cli:
+    - web
+    - delegation
+    - memory
+    - session_search
+    - todo
+    - clarify
+
+agent:
+  disabled_toolsets:
+    - terminal
+    - file
+    - code_execution
+    - browser
+    - computer_use
+    - cronjob
+    - skills
+    - connections
+    - catalog
+    - start_chat
+    - kanban
+
+delegation:
+  max_concurrent_children: 2
+  max_spawn_depth: 1
+  orchestrator_enabled: false
+  max_iterations: 20
+
+# delegation.model/provider/base_url sono omessi: i figli ereditano
+# il provider/modello configurato localmente nel nuovo profilo.
+# Non configura una sandbox OS e non impone un budget monetario.

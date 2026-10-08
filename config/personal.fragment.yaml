@@ -1,0 +1,12 @@
+# FRAMMENTO: fondere nelle sezioni esistenti dopo verifica della versione.
+# Non sostituisce config.yaml. Nessun provider, modello o segreto incluso.
+delegation:
+  max_concurrent_children: 2
+  max_spawn_depth: 1
+  orchestrator_enabled: false
+  max_iterations: 20
+
+# Lasciare delegation.model/provider/base_url non impostati per ereditare
+# il provider funzionante. Non cancellare override preesistenti senza analisi.
+# max_iterations limita i turni dei figli, non il costo totale della sessione.
+# Nessun toolset o confine filesystem è configurato da questo frammento.
